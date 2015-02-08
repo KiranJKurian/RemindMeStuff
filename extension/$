@@ -24,16 +24,17 @@
 </head>
 
 <body>
-<center>  
-  <a href="add.html" class="button">    Add    </a>
-  <a href="assignments.html" class="button">Assignments</a>
-</center>
-<!-- <center><form action="add.html">
+
+<center><form action="add.html">
     <input type="submit" value="Add">
 </form>
 <form action="Assignments.html">
     <input type="submit" value="Assignments">
-</form> -->
+</form>
+
+html"><h1>Assignments</h1></a></center>
+
+
 
 
 <script src="popup.js"></script>
