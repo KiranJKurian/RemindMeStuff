@@ -16,11 +16,13 @@
       <script rel ="js" src="js/skel.min.js"></script>
       <script rel ="js" src="js/skel-layers.min.js"></script>
       <script rel ="js" src="js/init.js"></script>
+      <script src="https://www.parsecdn.com/js/parse-1.3.4.min.js"></script>
       <noscript>
         <link rel="stylesheet" href="css/skel.css" />
         <link rel="stylesheet" href="css/style.css" />
         <link rel="stylesheet" href="css/style-wide.css" />
       </noscript>
+
 </head>
 
 <body>
@@ -34,8 +36,71 @@
 <form action="Assignments.html">
     <input type="submit" value="Assignments">
 </form> -->
+<h1>Sign Up</h1>
+  <form id="SignUp">
+    <input placeholder="username" id="username" type="text">
+    <input placeholder="password" id="password" type="password">
+    <input placeholder="email" id="email" type="email">
+    <input type="submit" value="submit">
+  </form>
+ 
+ 
+  <h2>Login</h2>
+  <p id="error" style="color:red"> Wrong Username or password</p>
+  <form id="Login">
+    <input placeholder="username" id="login-username" type="text">
+    <input placeholder="password" id="login-password" type="password">
+    <input type="submit" value="Login">
+  </form>
+ 
+ 
+  <div id="showMe">
+    <h1 style="color: blue">
+      Show me if user is logged in!!!
+    </h1>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+Parse.initialize("tlF96VIjmcQ7noWTyCcY7q2HQsIYuYKyNW3xsa5Y", "kpNCYIPLKHD24mHmbsTn1GU5XG0ZnatHPkeyz1gw");
+
+$('#SignUp').on('submit', function(e){
+e.preventDefault();
+
+var User = Parse.Object.extend("User");
+var newUser = new User();
+
+newUser.save({
+  username: $("#username").val(),
+  password: $("#password").val(),
+  email: $("#email").val()
+},{
+  success: function(newUser){
+    console.log("Yo it saved");
+  }
+});
+});
 
 
-<script src="popup.js"></script>
+var checkUser = new Parse.Query("User");
+
+$('#Login').on('submit', function(e){
+e.preventDefault();
+
+Parse.User.logIn($("#login-username").val(), $('#login-password').val(), {
+  success: function(user) {
+    $('#error').hide();
+    $('#showMe').show();
+
+  },
+  error: function(user, error) {
+    // The login failed. Check error to see why.
+    $('#error').show();
+  }
+});
+});
+
+
+</script>
 </body>
 </html>
