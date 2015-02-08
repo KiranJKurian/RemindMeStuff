@@ -1,3 +1,10 @@
+// alert("FUCK");
+$.getScript("Parse.js", function(){
+
+   alert("Script loaded and executed.");
+
+   // Use anything defined in the loaded script...
+});
 Parse.initialize("tlF96VIjmcQ7noWTyCcY7q2HQsIYuYKyNW3xsa5Y", "tNoWqeQHONKINhL8ot4GJNNDNNAZqpyRC7wWPqC1");
 
 $('#SignUp').on('submit', function(e){

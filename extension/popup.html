@@ -16,7 +16,7 @@
       <script rel ="js" src="js/skel.min.js"></script>
       <script rel ="js" src="js/skel-layers.min.js"></script>
       <script rel ="js" src="js/init.js"></script>
-      <script src="https://www.parsecdn.com/js/parse-1.3.4.min.js"></script>
+      <!--<script src="https://www.parsecdn.com/js/parse-1.3.4.min.js"></script>-->
       <noscript>
         <link rel="stylesheet" href="css/skel.css" />
         <link rel="stylesheet" href="css/style.css" />
@@ -59,48 +59,7 @@
       Show me if user is logged in!!!
     </h1>
   </div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-<script type="text/javascript">
-Parse.initialize("tlF96VIjmcQ7noWTyCcY7q2HQsIYuYKyNW3xsa5Y", "kpNCYIPLKHD24mHmbsTn1GU5XG0ZnatHPkeyz1gw");
-
-$('#SignUp').on('submit', function(e){
-e.preventDefault();
-
-var User = Parse.Object.extend("User");
-var newUser = new User();
-
-newUser.save({
-  username: $("#username").val(),
-  password: $("#password").val(),
-  email: $("#email").val()
-},{
-  success: function(newUser){
-    console.log("Yo it saved");
-  }
-});
-});
-
-
-var checkUser = new Parse.Query("User");
-
-$('#Login').on('submit', function(e){
-e.preventDefault();
-
-Parse.User.logIn($("#login-username").val(), $('#login-password').val(), {
-  success: function(user) {
-    $('#error').hide();
-    $('#showMe').show();
-
-  },
-  error: function(user, error) {
-    // The login failed. Check error to see why.
-    $('#error').show();
-  }
-});
-});
-
-
-</script>
+<script src="popup.js"></script>
 </body>
 </html>
