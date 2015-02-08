@@ -1,1 +1,3 @@
 ssh_key
+*.pyc
+.DS_Store
