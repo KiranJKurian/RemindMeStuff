@@ -8,6 +8,7 @@
   "browser_action": {
     "default_icon": "tinylogo.png",
     "default_popup": "popup.html"
+
   },
   "content_scripts": [ {
   "matches": ["http://*/*"],
@@ -15,6 +16,11 @@
 } ],
   "permissions": [
     "activeTab",
+    "tabs",
     "https://ajax.googleapis.com/"
-  ]
+  ],
+  "background": {
+    "scripts": ["jquery.min.js","popup.js"]
+  },
+  "content_security_policy" : "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
