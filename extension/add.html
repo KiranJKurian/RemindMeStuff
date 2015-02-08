@@ -1,15 +1,39 @@
-<html>
 <head>
-<link rel="stylesheet" type="text/css" href="add.css">
-<title>add</title>
+<title>RemindShit</title>
+ <style>
+	html{
+		height: 400px;
+		width: 300px;
+	}
+ </style>
+ <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+      <meta name="description" content="" />
+      <meta name="keywords" content="" />
+      <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+      <script rel ="js" src="js/jquery.min.js"></script>
+      <script rel ="js" src="js/jquery.dropotron.min.js"></script>
+      <script rel ="js" src="js/jquery.scrollgress.min.js"></script>
+      <script rel ="js" src="js/skel.min.js"></script>
+      <script rel ="js" src="js/skel-layers.min.js"></script>
+      <script rel ="js" src="js/init.js"></script>
+      <!--noscript>
+        <link rel="stylesheet" href="css/skel.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="css/style-wide.css" />
+      </noscript-->
 </head>
 
 <body>
-
-<a href="add.html"> <img src="addbutton.png" ></img> </a>
-<a href="assignments.html"> <img src="otherbutton.png"></img></a>
-
-<form>
+<center>  
+  <a href="add.html" class="button">    Add    </a>
+  <a href="assignments.html" class="button">Assignments</a>
+</center>
+<!-- <center><form action="add.html">
+    <input type="submit" value="Add">
+</form>
+<form action="Assignments.html">
+    <input type="submit" value="Assignments">
+</form> -->
 
 <p>Assignment:</p>
 <input type="text"></input>
@@ -18,13 +42,11 @@
 <input type="text"></input>
 
 <p>Due Date:</p>
-<input type="time"></input>
+<input type="text" id="date"></p>
 
-<input id="submit" type="submit"></input>
-
-</form>
+<input type="submit" id="submit"></input>
 
 
-
+<script src="add.js"></script>
 </body>
 </html>
