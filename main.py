@@ -50,6 +50,12 @@ decorator = OAuth2DecoratorFromClientSecrets(
 service = build('calendar', 'v3')
 
 
+def handle_400(request, response, exception):
+    template = JINJA_ENVIRONMENT.get_template('addClass.html')
+    response.write(template.render())
+    response.write("<center><h3>Congratulations, you have been redirected into the fourth dimension! Jk, but seriously, you're not supposed to be here</h3></center>")
+    response.write('<center><img src="/images/404.jpg" alt="Really?"></center>')
+
 def handle_404(request, response, exception):
     template = JINJA_ENVIRONMENT.get_template('addClass.html')
     response.write(template.render())
@@ -92,123 +98,59 @@ class addManualEvent(webapp2.RequestHandler):
         self.response.write(template.render())
         summary=self.request.get('summary')
         location=self.request.get('location')
+        if self.request.get('date'):
+          date=self.request.get('date')
+        else:
+          self.response.write("You didn't enter a date, %s"%('please <a href="/">try again and enter one.</a>'))
+          return
         if self.request.get('startHour'):
           startHour=self.request.get('startHour')
         else:
-          self.response.write("You didn't select a start hour, %s"%('please <a href="/addManual">try again and select one.</a>'))
+          self.response.write("You didn't select a start hour, %s"%('please <a href="/">try again and select one.</a>'))
           return
         if self.request.get('startMinute').isnumeric():
           startMinute=self.request.get('startMinute')
         else:
-          self.response.write("You didn't input a valid start minute, %s"%('please <a href="/addManual">try again and input one.</a>'))
+          self.response.write("You didn't input a valid start minute, %s"%('please <a href="/">try again and input one.</a>'))
           return
         startTime="%s:%s:00"%(startHour,startMinute)
-        if self.request.get('endHour'):
-          endHour=self.request.get('endHour')
-        else:
-          self.response.write("You didn't select an end hour, %s"%('please <a href="/addManual">try again and select one.</a>'))
-          return
-          
-        if self.request.get('endMinute').isnumeric():
-          endMinute=self.request.get('endMinute')
-        else:
-          self.response.write("You didn't input a valid end minute, %s"%('please <a href="/addManual">try again and input one.</a>'))
-          return
-        endTime="%s:%s:00"%(endHour,endMinute)
-        days=[]
-        errorCheck=True
-        if self.request.get('mon'):
-          days.append("m")
-          errorCheck=False
-        if self.request.get('tue'):
-          days.append("t")
-          errorCheck=False
-        if self.request.get('wed'):
-          days.append("w")
-          errorCheck=False
-        if self.request.get('thur'):
-          days.append("th")
-          errorCheck=False
-        if self.request.get('fri'):
-          days.append("f")
-          errorCheck=False
-        if errorCheck:
-          self.response.write("You didn't select a day, %s"%('please <a href="/addManual">try again and select one.</a>'))
-          return
         try:
-          for day in days:
-            if day=="m":
-                startDate="2015-01-26"
-            elif day=="t":
-                startDate="2015-01-20"
-            elif day=="w":
-                startDate="2015-01-21"
-            elif day=="th":
-                startDate="2015-01-22"
-            elif day=="f":
-                startDate="2015-01-23"
 
-            event = {
-              "location": "%s"%(location),
-               "end": {
-                   "dateTime": "%sT%s"%(startDate,endTime),
-                  "timeZone": "America/New_York"
-               },
-               "start": {
-                   "dateTime": "%sT%s"%(startDate,startTime),
-                  "timeZone": "America/New_York"
-               },
-               "summary": summary,
-               "recurrence": [
-                'RRULE:FREQ=WEEKLY;UNTIL=20150505T000000Z',
-               ],
-               "colorId": 9,
-               "reminders": {
-                  "useDefault":"false",
-                  "overrides": [
-                  {
-                      "method":"popup",
-                      "minutes": 20
-                   }
-                  ]
-                }
-              }
-            reminder=self.request.get('reminder')
-            if reminder=="reminder-none":
-              event["reminders"] = {
-                  "useDefault":"false",
-                  "overrides": [
-                  ]
-              }
-            elif reminder=='reminder-40':
-              event["reminders"] = {
-                  "useDefault":"false",
-                  "overrides": [
-                  {
-                    "method":"popup",
-                    "minutes": 40
+          event = {
+                    "location": "%s"%(location),
+                     "end": {
+                         "dateTime": "%sT%s"%(date,startTime),
+                        "timeZone": "America/New_York"
+                     },
+                     "start": {
+                         "dateTime": "%sT%s"%(date,startTime),
+                        "timeZone": "America/New_York"
+                     },
+                     "summary": summary,
+                     "reminders": {
+                        "useDefault":"false",
+                        "overrides": [
+                        {
+                            "method":"popup",
+                            "minutes": 20
+                         }
+                        ]
+                      }
                   }
-                  ]
-              }
-            elif reminder=='reminder-60':
-              event["reminders"] = {
-                  "useDefault":"false",
-                  "overrides": [
-                  {
-                    "method":"popup",
-                    "minutes": 60
-                  }
-                  ]
-              }
-            http = decorator.http()
+          # if self.request.get('reminder1')=="reminder-none":
+          #   event["reminders"]["overrides"].append({
+          #         "method":"popup",
+          #         "minutes": 40
+          #       })
+          http = decorator.http()
 
-            recurring_event = service.events().insert(calendarId='primary', body=event).execute(http=http)
+          service.events().insert(calendarId='primary', body=event).execute(http=http)
           self.response.out.write("<center><h2>Awesome, added %s to your calendar!</h2></center>"%(summary))
         except:
-          self.response.out.write('<center>Oops, ran into an error when trying to add your class to your calendar. Try again, you may have mistyped something. If you have an online lecture/recitation please <a href="/addManual">add that class manually here</a></center>')
+          self.response.out.write('<center>Oops, ran into an error when trying to add your homework to your calendar. <a href="/">Try again</a></center>')
         self.response.out.write("""<div class="row uniform 50%">
             <div class="4u 12u(3)"><center>
-              <a href="/" class="button fit">Add More Classes</a><center>
+              <a href="/" class="button fit">Add More Homework</a><center>
               </center>
             </div>
             <div class="4u 12u(3)"><center>
@@ -238,6 +180,7 @@ application = webapp.WSGIApplication(
   debug=True)
 run_wsgi_app(application)
 
+application.error_handlers[400] = handle_400
 application.error_handlers[404] = handle_404
 application.error_handlers[500] = handle_500
 application.error_handlers[405] = handle_405
