@@ -51,25 +51,29 @@ service = build('calendar', 'v3')
 
 
 def handle_400(request, response, exception):
-    template = JINJA_ENVIRONMENT.get_template('addClass.html')
+    template = JINJA_ENVIRONMENT.get_template('addEvent.html')
     response.write(template.render())
     response.write("<center><h3>Congratulations, you have been redirected into the fourth dimension! Jk, but seriously, you're not supposed to be here</h3></center>")
     response.write('<center><img src="/images/404.jpg" alt="Really?"></center>')
 
 def handle_404(request, response, exception):
-    template = JINJA_ENVIRONMENT.get_template('addClass.html')
+    template = JINJA_ENVIRONMENT.get_template('addEvent.html')
     response.write(template.render())
     response.write("<center><h3>Congratulations, you hacked into the fourth dimension! Jk, but seriously, you're not supposed to be here</h3></center>")
     response.write('<center><img src="/images/404.jpg" alt="Really?"></center>')
 
 def handle_405(request, response, exception):
-    template = JINJA_ENVIRONMENT.get_template('addClass.html')
+    template = JINJA_ENVIRONMENT.get_template('addEvent.html')
     response.write(template.render())
     response.write("<center><h3>Congratulations, you hacked into the fourth dimension! Jk, but seriously, you're not supposed to be able to <b>get</b> here</h3></center>")
     response.write('<center><img src="/images/404.jpg" alt="Really?"></center>')
 
 def handle_500(request, response, exception):
     logging.exception(exception)
+    template = JINJA_ENVIRONMENT.get_template('addEvent.html')
+    response.write(template.render())
+    response.write("<center><h3>Dude, you just crashed our servers... jerk</h3></center>")
+    response.write('<center><img src="/images/404.jpg" alt="Really?"></center>')
     response.write('A server error occurred!')
     response.set_status(500)
 
@@ -88,13 +92,13 @@ class MainHandler(webapp2.RequestHandler):
         template_values = {
             'hello':hello
         }
-        template = JINJA_ENVIRONMENT.get_template('addManual.html')
+        template = JINJA_ENVIRONMENT.get_template('main.html')
         self.response.write(template.render(template_values))
 
-class addManualEvent(webapp2.RequestHandler):
+class addEvent(webapp2.RequestHandler):
     @decorator.oauth_aware
     def post(self):
-        template = JINJA_ENVIRONMENT.get_template('addClass.html')
+        template = JINJA_ENVIRONMENT.get_template('addEvent.html')
         self.response.write(template.render())
         summary=self.request.get('summary')
         location=self.request.get('location')
@@ -129,19 +133,58 @@ class addManualEvent(webapp2.RequestHandler):
                      "summary": summary,
                      "reminders": {
                         "useDefault":"false",
-                        "overrides": [
-                        {
-                            "method":"popup",
-                            "minutes": 20
-                         }
-                        ]
+                        # "overrides": [
+                        # ]
                       }
                   }
-          # if self.request.get('reminder1')=="reminder-none":
-          #   event["reminders"]["overrides"].append({
-          #         "method":"popup",
-          #         "minutes": 40
-          #       })
+          if self.request.get('reminder1') or self.request.get('reminder2') or self.request.get('reminder3'):
+            event["reminders"]={
+                        "useDefault":"false",
+                        "overrides": [
+                        ]
+                      }
+            if self.request.get('reminder1'):
+              if self.request.get('reminderUnit1')=="Minute":
+                reminder1=self.request.get('reminder1')
+              elif self.request.get('reminderUnit1')=="Hour":
+                reminder1=int(self.request.get('reminder1'))*60
+              elif self.request.get('reminderUnit1')=="Day":
+                reminder1=int(self.request.get('reminder1'))*60*24
+              else:
+                self.request.write("Ya Fucked Up")
+                return
+              event["reminders"]["overrides"].append({
+                    "method":"popup",
+                    "minutes": reminder1
+                  })
+            if self.request.get('reminder2'):
+              if self.request.get('reminderUnit2')=="Minute":
+                reminder2=self.request.get('reminder2')
+              elif self.request.get('reminderUnit2')=="Hour":
+                reminder2=(int(self.request.get('reminder2'))*60)
+              elif self.request.get('reminderUnit2')=="Day":
+                reminder2=int(self.request.get('reminder2')*60*24)
+              else:
+                self.request.write("Ya Fucked Up")
+                return
+              event["reminders"]["overrides"].append({
+                    "method":"popup",
+                    "minutes": reminder2
+                  })
+            if self.request.get('reminder3'):
+              if self.request.get('reminderUnit3')=="Minute":
+                reminder3=self.request.get('reminder3')
+              elif self.request.get('reminderUnit3')=="Hour":
+                reminder3=int(self.request.get('reminder3'))*60
+              elif self.request.get('reminderUnit3')=="Day":
+                reminder3=int(self.request.get('reminder3'))*60*24
+              else:
+                self.request.write("Ya Fucked Up")
+                return
+              event["reminders"]["overrides"].append({
+                    "method":"popup",
+                    "minutes": reminder3
+                  })
           http = decorator.http()
 
           service.events().insert(calendarId='primary', body=event).execute(http=http)
@@ -172,7 +215,7 @@ class clubawesome(webapp2.RequestHandler):
 application = webapp.WSGIApplication(
   [
    ('/',MainHandler),
-   ('/addManualEvent',addManualEvent),
+   ('/addEvent',addEvent),
    ('/donate',donate),
    ('/clubawesome',clubawesome),
    (decorator.callback_path, decorator.callback_handler()),
