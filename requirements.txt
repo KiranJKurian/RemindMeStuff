@@ -12,7 +12,7 @@ rsa==3.1.4
 simplejson==3.6.5
 six==1.8.0
 uritemplate==0.6
-urllib3==1.10
+urllib3==1.26.5
 web.py==0.37
 webapp2==2.5.2
 wsgiref==0.1.2
